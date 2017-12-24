@@ -73,6 +73,7 @@ namespace Spect.Net.VsPackage.ToolWindows.Disassembly
         {
             DispatchOnUiThread(() =>
             {
+                args.RefreshAction?.Invoke();
                 RefreshVisibleItems();
                 if (Vm.FullViewMode)
                 {

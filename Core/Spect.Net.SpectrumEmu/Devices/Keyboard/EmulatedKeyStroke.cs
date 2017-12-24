@@ -13,7 +13,7 @@
         /// <summary>
         /// End CPU tact
         /// </summary>
-        public long EndTact { get; }
+        public long EndTact { get; set; }
 
         /// <summary>
         /// The primary key's code
@@ -34,5 +34,10 @@
             PrimaryCode = primaryCode;
             SecondaryCode = secondaryCode;
         }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() =>
+            $"S:{StartTact}, E:{EndTact}, L:{EndTact - StartTact}, {PrimaryCode}-{SecondaryCode}";
     }
 }

@@ -14,11 +14,17 @@ namespace Spect.Net.VsPackage.ToolWindows
         public ushort? Address { get; }
 
         /// <summary>
+        /// Action to invoke before refreshing the disassembly view
+        /// </summary>
+        public Action RefreshAction { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.EventArgs" /> class.
         /// </summary>
-        public DisassemblyViewRefreshedEventArgs(ushort? address = null)
+        public DisassemblyViewRefreshedEventArgs(ushort? address = null, Action refreshAction = null)
         {
             Address = address;
+            RefreshAction = refreshAction;
         }
     }
 }

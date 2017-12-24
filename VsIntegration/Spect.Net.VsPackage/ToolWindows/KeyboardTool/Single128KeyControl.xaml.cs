@@ -3,20 +3,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Spect.Net.SpectrumEmu.Devices.Keyboard;
 
-// ReSharper disable PossibleNullReferenceException
-
 namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
 {
     /// <summary>
-    /// Interaction logic for SingleKeyControl.xaml
+    /// Interaction logic for Single128KeyControl.xaml
     /// </summary>
-    public partial class SingleKeyControl : IKeyCodeProvider
+    public partial class Single128KeyControl : IKeyCodeProvider
     {
+        /// <summary>
+        /// Use this brush for normal background color
+        /// </summary>
+        public static SolidColorBrush NormalButtonBack = new SolidColorBrush(Color.FromRgb(56, 56, 56));
+
+        /// <summary>
+        /// Use this brush when mouse is over
+        /// </summary>
+        public static SolidColorBrush MouseOverButtonBack = new SolidColorBrush(Color.FromRgb(64, 80, 80));
+
         /// <summary>
         /// The main key letter dependecy property
         /// </summary>
         public static readonly DependencyProperty CodeProperty = DependencyProperty.Register(
-            "Code", typeof(SpectrumKeyCode), typeof(SingleKeyControl), new PropertyMetadata(default(SpectrumKeyCode)));
+            "Code", typeof(SpectrumKeyCode), typeof(Single128KeyControl), new PropertyMetadata(default(SpectrumKeyCode)));
 
         /// <summary>
         /// The main key letter
@@ -28,15 +36,25 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
+        /// The secondary key letter dependecy property
+        /// </summary>
+        public static readonly DependencyProperty SecondaryCodeProperty = DependencyProperty.Register(
+            "SecondaryCode", typeof(SpectrumKeyCode?), typeof(Single128KeyControl), new PropertyMetadata(default(SpectrumKeyCode?)));
+
+        /// <summary>
         /// The main key letter
         /// </summary>
-        public SpectrumKeyCode? SecondaryCode { get; set; } = null;
+        public SpectrumKeyCode? SecondaryCode
+        {
+            get => (SpectrumKeyCode?)GetValue(SecondaryCodeProperty);
+            set => SetValue(SecondaryCodeProperty, value);
+        }
 
         /// <summary>
         /// The main key letter dependecy property
         /// </summary>
         public static readonly DependencyProperty MainKeyProperty = DependencyProperty.Register(
-            "MainKey", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
+            "MainKey", typeof(string), typeof(Single128KeyControl), new PropertyMetadata(default(string)));
 
         /// <summary>
         /// The main key letter
@@ -51,7 +69,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// The keyword dependecy property
         /// </summary>
         public static readonly DependencyProperty KeyWordProperty = DependencyProperty.Register(
-            "Keyword", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
+            "Keyword", typeof(string), typeof(Single128KeyControl), new PropertyMetadata(default(string)));
 
         /// <summary>
         /// The keyword
@@ -66,7 +84,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// The key with symbol shift dependecy property
         /// </summary>
         public static readonly DependencyProperty SShiftKeyProperty = DependencyProperty.Register(
-            "SShiftKey", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
+            "SShiftKey", typeof(string), typeof(Single128KeyControl), new PropertyMetadata(default(string)));
 
         /// <summary>
         /// The key with symbol shift
@@ -81,7 +99,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// The key in Ext mode dependecy property
         /// </summary>
         public static readonly DependencyProperty ExtKeyProperty = DependencyProperty.Register(
-            "ExtKey", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
+            "ExtKey", typeof(string), typeof(Single128KeyControl), new PropertyMetadata(default(string)));
 
         /// <summary>
         /// The key in Ext mode
@@ -96,7 +114,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// The key in Ext mode with shift dependecy property
         /// </summary>
         public static readonly DependencyProperty ExtShiftKeyProperty = DependencyProperty.Register(
-            "ExtShiftKey", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
+            "ExtShiftKey", typeof(string), typeof(Single128KeyControl), new PropertyMetadata(default(string)));
 
         /// <summary>
         /// The key in Ext mode with shift
@@ -108,25 +126,10 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
-        /// The key in Ext mode dependecy property
-        /// </summary>
-        public static readonly DependencyProperty ColorKeyProperty = DependencyProperty.Register(
-            "ColorKey", typeof(string), typeof(SingleKeyControl), new PropertyMetadata(default(string)));
-
-        /// <summary>
-        /// The key in Ext mode
-        /// </summary>
-        public string ColorKey
-        {
-            get => (string)GetValue(ColorKeyProperty);
-            set => SetValue(ColorKeyProperty, value);
-        }
-
-        /// <summary>
         /// Signs simple key mode
         /// </summary>
         public static readonly DependencyProperty SimpleModeProperty = DependencyProperty.Register(
-            "SimpleMode", typeof(bool), typeof(SingleKeyControl), new PropertyMetadata(default(bool)));
+            "SimpleMode", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
 
         /// <summary>
         /// The key contains simple text
@@ -138,10 +141,25 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
+        /// Signs Clean key mode
+        /// </summary>
+        public static readonly DependencyProperty CleanModeProperty = DependencyProperty.Register(
+            "CleanMode", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
+
+        /// <summary>
+        /// The key contains simple text
+        /// </summary>
+        public bool CleanMode
+        {
+            get => (bool)GetValue(CleanModeProperty);
+            set => SetValue(CleanModeProperty, value);
+        }
+
+        /// <summary>
         /// Signs numeric key mode
         /// </summary>
         public static readonly DependencyProperty NumericModeProperty = DependencyProperty.Register(
-            "NumericMode", typeof(bool), typeof(SingleKeyControl), new PropertyMetadata(default(bool)));
+            "NumericMode", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
 
         /// <summary>
         /// The key contains simple text
@@ -153,70 +171,27 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
-        /// Signs SYM mode
+        /// Signs that the key has graphics
         /// </summary>
-        public static readonly DependencyProperty SymModeProperty = DependencyProperty.Register(
-            "SymMode", typeof(bool), typeof(SingleKeyControl), new PropertyMetadata(default(bool)));
+        public static readonly DependencyProperty CenteredProperty = DependencyProperty.Register(
+            "Centered", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
 
         /// <summary>
-        /// The key should be colored as SYM
+        /// The shift text is centered
         /// </summary>
-        public bool SymMode
+        public bool Centered
         {
-            get => (bool)GetValue(SymModeProperty);
-            set => SetValue(SymModeProperty, value);
+            get => (bool)GetValue(HasGraphicsProperty);
+            set => SetValue(HasGraphicsProperty, value);
         }
 
-        /// <summary>
-        /// Signs simple key mode
-        /// </summary>
-        public static readonly DependencyProperty ButtonWidthProperty = DependencyProperty.Register(
-            "ButtonWidth", typeof(double), typeof(SingleKeyControl), new PropertyMetadata(76.0));
 
-        /// <summary>
-        /// The key contains simple text
-        /// </summary>
-        public double ButtonWidth
-        {
-            get => (double)GetValue(ButtonWidthProperty);
-            set => SetValue(ButtonWidthProperty, value);
-        }
-
-        /// <summary>
-        /// Signs simple key mode
-        /// </summary>
-        public static readonly DependencyProperty NumForegroundProperty = DependencyProperty.Register(
-            "NumForeground", typeof(SolidColorBrush), typeof(SingleKeyControl));
-
-        /// <summary>
-        /// The key contains simple text
-        /// </summary>
-        public SolidColorBrush NumForeground
-        {
-            get => (SolidColorBrush)GetValue(NumForegroundProperty);
-            set => SetValue(NumForegroundProperty, value);
-        }
-
-        /// <summary>
-        /// Signs simple key mode
-        /// </summary>
-        public static readonly DependencyProperty NumBackgroundProperty = DependencyProperty.Register(
-            "NumBackground", typeof(SolidColorBrush), typeof(SingleKeyControl));
-
-        /// <summary>
-        /// The key contains simple text
-        /// </summary>
-        public SolidColorBrush NumBackground
-        {
-            get => (SolidColorBrush)GetValue(NumBackgroundProperty);
-            set => SetValue(NumBackgroundProperty, value);
-        }
 
         /// <summary>
         /// Signs that the key has graphics
         /// </summary>
         public static readonly DependencyProperty HasGraphicsProperty = DependencyProperty.Register(
-            "HasGraphics", typeof(bool), typeof(SingleKeyControl), new PropertyMetadata(default(bool)));
+            "HasGraphics", typeof(bool), typeof(Single128KeyControl), new PropertyMetadata(default(bool)));
 
         /// <summary>
         /// The key has graphics
@@ -231,7 +206,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// Graphics code of the key
         /// </summary>
         public static readonly DependencyProperty GraphicsCodeProperty = DependencyProperty.Register(
-            "GraphicsCode", typeof(int), typeof(SingleKeyControl), new PropertyMetadata(-1));
+            "GraphicsCode", typeof(int), typeof(Single128KeyControl), new PropertyMetadata(-1));
 
         /// <summary>
         /// Graphics code of the key
@@ -256,6 +231,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// Has the graphics Bit 2 set?
         /// </summary>
         public bool HasBit2 => (GraphicsCode & 0x04) != 0;
+
+        /// <summary>
+        /// Does the button has text for Extended key?
+        /// </summary>
+        public bool HidesExtCaption => string.IsNullOrWhiteSpace(ExtKey);
 
         /// <summary>
         /// Responds to the event when the main key is clicked
@@ -283,6 +263,11 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public event MouseButtonEventHandler NumericControlKeyClicked;
 
         /// <summary>
+        /// Responds to the event when the numeric shift key is clicked
+        /// </summary>
+        public event MouseButtonEventHandler NumericShiftKeyClicked;
+
+        /// <summary>
         /// Responds to the event when the graphics control key is clicked
         /// </summary>
         public event MouseButtonEventHandler GraphicsControlKeyClicked;
@@ -292,14 +277,30 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         /// </summary>
         public event MouseButtonEventHandler KeyReleased;
 
-        public SingleKeyControl()
+        public Single128KeyControl()
         {
             InitializeComponent();
             DataContext = this;
         }
 
         /// <summary>
-        /// Forward the main key clicked event
+        /// Highlight the button background when the mouse enters
+        /// </summary>
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ButtonBack.Fill = MouseOverButtonBack;
+        }
+
+        /// <summary>
+        /// Set normal background when mouse leaves
+        /// </summary>
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ButtonBack.Fill = NormalButtonBack;
+        }
+
+        /// <summary>
+        /// Handles the event when the main key has been clicked
         /// </summary>
         private void OnMainKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -307,25 +308,30 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             {
                 uiElement.CaptureMouse();
             }
-            SecondaryCode = null;
             MainKeyClicked?.Invoke(this, e);
         }
 
         /// <summary>
-        /// Forward the symbol shift key clicked event
+        /// Handle the event when the shift key has been clicked
         /// </summary>
-        private void OnSymShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnSShiftMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is UIElement uiElement)
             {
                 uiElement.CaptureMouse();
             }
-            SecondaryCode = null;
-            SymShiftKeyClicked?.Invoke(this, e);
+            if (NumericMode)
+            {
+                NumericShiftKeyClicked?.Invoke(this, e);
+            }
+            else
+            {
+                SymShiftKeyClicked?.Invoke(this, e);
+            }
         }
 
         /// <summary>
-        /// Forward the extended mode key clicked event
+        /// Handle the event when the extended key has been clicked
         /// </summary>
         private void OnExtKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -335,8 +341,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
             }
             if (NumericMode)
             {
-                SecondaryCode = SpectrumKeyCode.CShift;
-                MainKeyClicked?.Invoke(this, e);
+                NumericControlKeyClicked?.Invoke(this, e);                
             }
             else
             {
@@ -345,29 +350,15 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         }
 
         /// <summary>
-        /// Forward the extended mode key clicked with shift event
+        /// Handle the event when the extended shift key has been clicked
         /// </summary>
-        private void OnExtShiftKeyMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnExtShifKeyMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is UIElement uiElement)
             {
                 uiElement.CaptureMouse();
             }
-            SecondaryCode = null;
             ExtShiftKeyClicked?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Forward the numeric control key clicked event
-        /// </summary>
-        private void NumericControlKeyMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is UIElement uiElement)
-            {
-                uiElement.CaptureMouse();
-            }
-            SecondaryCode = null;
-            NumericControlKeyClicked?.Invoke(this, e);
         }
 
         /// <summary>
@@ -398,7 +389,7 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
     /// <summary>
     /// Design time sample data for SingleKeyControl
     /// </summary>
-    public class SingleKeyControlSampleData
+    public class SingleKey128ControlSampleData
     {
         public string MainKey { get; set; } = "G";
         public string Keyword { get; set; } = "RETURN";
@@ -406,16 +397,14 @@ namespace Spect.Net.VsPackage.ToolWindows.KeyboardTool
         public string ExtKey { get; set; } = "READ";
         public string ExtShiftKey { get; set; } = "CIRCLE";
         public bool SimpleMode { get; set; } = false;
+        public bool CleanMode { get; set; } = false;
         public bool NumericMode { get; set; } = true;
+        public bool Centered { get; set; } = true;
         public bool HasGraphics { get; set; } = true;
         public int GraphicsCode { get; set; } = 7;
         public bool HasBit0 { get; set; } = true;
         public bool HasBit1 { get; set; } = true;
         public bool HasBit2 { get; set; } = true;
-        public bool SymMode { get; set; } = false;
-        public double ButtonWidth { get; set; } = 100.0;
-        public string ColorKey { get; set; } = "BLUE";
-        public SolidColorBrush NumForeground { get; set; } = Brushes.Blue;
-        public SolidColorBrush NumBackground { get; set; } = Brushes.Transparent;
+        public bool HidesExtCaption { get; set; } = false;
     }
 }

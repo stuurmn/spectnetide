@@ -13,7 +13,7 @@ asmline
 	:	label? (pragma | operation) comment?
 	|	directive comment?
 	|	comment
-	|   label
+	|   label comment?
 	;
 
 label
@@ -43,7 +43,7 @@ pragma
 	;
 
 directive
-	:	(IFDEF|IFNDEF|DEFINE|UNDEF) IDENTIFIER
+	:	(IFDEF|IFNDEF|DEFINE|UNDEF|IFMOD|IFNMOD) IDENTIFIER
 	|	ENDIF
 	|	ELSE
 	|	IF expr
@@ -175,6 +175,10 @@ reg8Idx
 	|	'xh'|'XH'
 	|	'yl'|'YL'
 	|	'yh'|'YH'
+	|	'ixl'|'IXL'|'IXl'
+	|	'ixh'|'IXH'|'IXh'
+	|	'iyl'|'IYL'|'IYl'
+	|	'iyh'|'IYH'|'IYh'
 	;
 
 reg8Spec
@@ -423,6 +427,8 @@ DEFINE	: '#define' ;
 UNDEF	: '#undef' ;
 INCLUDE	: '#include' ;
 IF		: '#if' ;
+IFMOD	: '#ifmod' ;
+IFNMOD	: '#ifnmod' ;
 
 // --- Pragma tokens
 ORGPRAG	: '.org' | '.ORG' | 'org' | 'ORG' ;
